@@ -22,6 +22,12 @@ public @interface MyAnnotation {
     // 给注解添加缺省默认值
     int defaultVal() default -1;
 
+    enum Color {
+        Red,
+        Green,
+        Blue
+    }
+
     // 给注解添加枚举类型元素，仍可以指定缺省默认值
     Color color() default Color.Red;
 
