@@ -298,29 +298,7 @@ Java中异常对象派生于`Throwable`类，层次结构如下
 
 #### 关于`ArrayList`与`Vector`的选择
 
-使用`ArrayList`而不是`Vector`的原因：`ArrayList`所有方法是<u>线程不安全</u>的，`Vector`所有方法是<u>同步的</u>（线程安全），`Vector`在单线程情况下开销较大
-
-### `HashSet` 散列集， `Hashtable` 散列表
-
-使用散列表数据结构，用于快速找到元素，不在意元素顺序。
-
-<img src="Java基础.assets/hash_table.png" alt="hash_table" style="zoom:50%;" />
-
-#### 关于再散列
-
-散列表的装填因子*load factor*用来表示自动再散列阈值（默认0.75，当元素填满了75%以上则会再散列，桶数翻倍）。
-
-#### 关于类库优化
-
-`Hashtable`使用链表（图中右侧链表）来维护一个桶*bucket*（白块与链表的集合），桶满时会使用<u>二叉树</u>提高性能；
-
-桶的大小为预计元素个数的<u>75%~150%</u>，<u>默认为16</u>，桶数为2的幂。
-
-### `TreeSet` 树集
-
-#### `TreeSet`与`HashSet`的区别
-
-与`HashSet`类似，数据结构使用<u>红黑树</u>，因此遍历时是有序的集合；由于包含了比较过程，需要实现`Comparable`接口或提供`Comparator`。
+使用`ArrayList`而不是`Vector`的原因：`ArrayList`所有方法是<u>线程不安全</u>的，`Vector`所有方法是<u>同步的</u>（线程安全），`Vector`在单线程情况下开销较大。
 
 ### `Queue` 队列，`Deque` 双端队列
 
@@ -352,39 +330,103 @@ Java中异常对象派生于`Throwable`类，层次结构如下
 
 适用于任务调度，值越小优先级越高。
 
+## `Set`
+
+### `HashSet` 散列集， `Hashtable` 散列表
+
+使用散列表数据结构，用于快速找到元素，不在意元素顺序。
+
+#### 关于再散列
+
+散列表的装填因子*load factor*用来表示自动再散列阈值（默认0.75，当元素填满了75%以上则会再散列，桶数翻倍）。
+
+#### 关于类库优化
+
+`Hashtable`使用链表（图中右侧链表）来维护一个桶*bucket*（白块与链表的集合），桶满时会使用<u>二叉树</u>提高性能；
+
+桶的大小为预计元素个数的<u>75%~150%</u>，<u>默认为16</u>，桶数为2的幂。
+
+### `TreeSet` 树集
+
+#### `TreeSet`与`HashSet`的区别
+
+与`HashSet`类似，数据结构使用<u>红黑树</u>，因此遍历时是有序的集合；由于包含了比较过程，需要实现`Comparable`接口或提供`Comparator`。
+
 ## Map
 
 ### `HashMap`
 
-`HashMap`线程不安全，元素的key最多允许一个`null`，元素的value可以有多个`null`，无法保证元素顺序，初始容量为<u>16</u>；扩展容量时采用<u>头插</u>节点方式（造成的结果是每次扩容元素逆序一次，多线程时可能产生环链）；
+`HashMap`线程不安全，元素的key最多允许一个`null`，元素的value可以有多个`null`，无法保证元素顺序，初始容量为<u>16</u>；扩展容量时采用<u>头插</u>节点方式（造成的结果是每次扩容元素逆序一次，多线程时可能产生环链）。
 
 ### `LinkedHashMap`
 
-`LinkedHashMap`是`HashMap`的子类，记录了元素插入顺序，因此使用`iterator`时是按插入顺序遍历的；
+`LinkedHashMap`是`HashMap`的子类，记录了元素插入顺序，因此使用`iterator`时是按插入顺序遍历的。
 
 ### `HashTable`
 
-`HashTable`线程安全，元素的key或value都不允许为`null`可以多线程共享，更好的替代是`ConcurrentHashMap`；
+`HashTable`线程安全，元素的key或value都不允许为`null`可以多线程共享，更好的替代是`ConcurrentHashMap`。
 
 ### `TreeMap`
 
-`TreeMap`实现了`SortMap`接口，使用红黑树数据结构，默认根据key的升序排列元素，即元素有顺序
+`TreeMap`实现了`SortMap`接口，使用红黑树数据结构，默认根据key的升序排列元素，即元素有顺序。
 
-### 关于遍历速度
+### `Map`部分总结
+
+|            |           HashMap           |        TreeMap        |
+| :--------: | :-------------------------: | :-------------------: |
+|  数据结构  |         Hash散列表          |        红黑树         |
+|  数据顺序  |          随机顺序           |        key升序        |
+|  性能损耗  |           基本无            |    插入、删除过程     |
+| key与value | 允许一个key:value=null:null | key:value都不允许null |
+|  线程安全  |           不安全            |        不安全         |
+
+#### 关于遍历速度
 
 `HashMap`遍历速度与容量有关，`LinkedHashMap`遍历速度与数据量有关；
 
 `HashMap`对key散列映射，`TreeMap`根据key组织搜索树，前者更快，后者排了顺序。
 
+遍历`HashMap`的几种方式：
+
 * `forEach`的lambda表达式
 
-  `hashMap.forEach((k, v) -> doSomthing(k, v));`
+  ```java
+  hashMap.forEach((k, v) -> {doSomething(k, v);});
+  ```
+  
+* 按`Entry`遍历
 
-### 关于hash冲突
+  ```java
+  for(Map.Entry<Object, Object> entry : hashMap.entrySet()){
+      doSomething(entry.getKey(), entry.getValue());
+  }
+  ```
+
+* 按key遍历
+
+  ```java
+  for(Object key : hashMap.keySet()) {
+      doSomething(key);
+  }
+  ```
+
+* 按value遍历
+
+  ```java
+  for(Object value : map.values()) {
+      doSomething(value);
+  }
+  ```
+
+  
+
+#### 关于hash冲突
 
 `HashMap`由`Entry`组成的数组（桶）构成；当`Entry`的hash code冲突时，同一个hash code下再用链表构成，元素插入是**头插入**，默认长度**16**，自动扩展时长度为**2的幂**（为了hash后减少碰撞）；冲突**链表长度>8**时，后面的数据保存在**红黑树**中。
 
-### `HashMap`的`loadFactor`为什么是0.75
+<img src="Java基础.assets/hash_table.png" alt="hash_table" style="zoom:33%;" />
+
+#### `HashMap`的`loadFactor`为什么是0.75
 
 在空间与时间上折衷，`loadFactor`大了会降低空间开销但是增加查找成本。由于**泊松分布**，0.75碰撞最小。
 
@@ -436,23 +478,8 @@ Java多线程的问题，是由Java虚拟机的内存模型（Java Memory Model�
 
 * `volatile`保证了共享变量一致性的同时，禁止了指令重排序优化（使用**内存屏障**实现），保证了被`volatile`修饰的共享变量在编译后执行的顺序与代码顺序相同。
 
-* 防止指令重排序的办法可以应用到单例设计模式中，避免单实例对象还没完成`new`的全部原子操作就被其他线程占用：
+* 防止指令重排序的办法可以应用到单例设计模式中，避免单实例对象还没完成`new`的全部原子操作就被其他线程占用。代码可以参见[单例设计模式]()部分。
 
-  ```java
-  public class Singleton {
-      private volatile static Singleton instance;  // 单实例
-      public static Singleton getInstance() {
-          if (instance == null) {
-              synchronized (Singleton.class) {
-                  if (instance == null)
-                      //new过程经历了：分配内存、初始化实例、返回内存地址，共3步，非原子操作。需要volatile禁止重排序，防止new的过程未完成就被其他线程拿去用
-                      instance = new Singleton();
-              }
-          }
-          return instance;
-      }
-  }
-  ```
 
 ### `synchronized`与`volatile`的选择
 
@@ -541,7 +568,7 @@ public @interface MyAnnotation {
   }
   ```
 
-* `Retention`（注解生命周期）的参数保存在*java.lang.annotation.RetentionPolicy*中，包含了以下几种：
+* `Retention`（注解生命周期）的参数保存在*java.lang.annotation.RetentionPolicy*中，包含了以下几种： 
 
   ```java
   public enum RetentionPolicy {
