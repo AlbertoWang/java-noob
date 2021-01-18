@@ -205,6 +205,101 @@ Son son = new Father()				// 编译错误
 Son son = (Son) new Father()		// 运行错误
 ```
 
+# 范型
+
+## 范型相关定义
+
+### 范型类
+
+使用`<>`将范型变量标出：
+
+```java
+public class MyClass<T, U> {
+    // 同时使用两种范型变量
+    private T first;
+    private U second;
+}
+```
+
+### 范型方法
+
+范型变量放在修饰符（`public`或`static`等）之后：
+
+```java
+public static <T> T methodName(T t) {
+    // 返回T范型
+    return t;
+}
+```
+
+### 范型变量限定
+
+如果需要确保范型变量具有某个方法（比如`Comparable`接口中的`compareTo`），需要在范型变量后添加`extends <FirstInterfaceName> & <SecondInterfaceName>`修饰限定：
+
+```java
+public static <T extends Comparable & Serializable> MyClass<T> methodName(T t) {
+    // T范型变量同时继承了Comparable与Serializable接口
+    // 同时继承多个接口的时候，没有方法的接口放在限定列表的末尾
+    return new MyClass<>(t);
+}
+```
+
+## 关于范型的约束
+
+### 范型类型的擦除
+
+JVM没有范型类型的对象，因此在编译时，范型类型会被擦除，变成其限定类型（没给出限定类型则成为`Object`）：
+
+```java
+public class MyClass {
+    // 被擦除的范型变量
+    private Object first;
+    private Object second;
+}
+```
+
+### 范型类型的限制
+
+#### 不能实例化范型类型变量
+
+由于范型类型会被擦除，`T t = new T()`的写法就是不合法的。但是可以通过函数式接口`Supplier<T>`表示一个无参数且返回类型为`T`的方法：
+
+```java
+public static <T> MyClass<T> constructMyClass(Supplier<T> supplier) {
+    return new MyClass<>(supplier.get());
+}
+```
+
+使用时候可以`MyClass<String> m = MyClass.constructMyClass(String::new)`。
+
+#### 不能构造范型数组
+
+## `Optional`类型
+
+`Optional<T>`是一种包装器（wrapper），要么包装了类型`T`的对象，要么没包装任何对象，这是一种更安全的替代类型`T`的引用：这种引用要么是对应类型`T`的对象，要么是`null`；`Optional`类型支持流`Stream`中定义的多种操作，如`map`或`filter`。
+
+### 包装内容的创建
+
+* `of(T value)`：包装对象`value`，如果对象为`null`抛出异常；
+* `ofNullable(T value)`：作用同上，但不会抛出异常，而是产生空的包装器；
+* `empty()`：创建空的包装器。
+
+### 包装内容的获取
+
+* `orElse(T other)`：获取包装器里的值，如果为空则产生一个类型为`T`的`other`对象；
+* `orElseGet(<lambda表达式/方法引用>)`：作用同上，但`other`的来源使用提供的方法产生；
+* `orElseThrow(<Exception的new方法引用>)`：作用同上，但不产生对象，直接抛出异常。
+
+### 包装内容的处理
+
+* `ifPresent(<lambda表达式/方法引用>)`：对包装器里的值直接调用方法进行操作；
+* `map()`/`filter()`：与`Stream`中的作用相同；
+* `flatMap()`
+
+
+
+
+
 # 异常与日志
 
 ## 异常
@@ -216,27 +311,6 @@ Java中异常对象派生于`Throwable`类，层次结构如下
 * `Error`：系统内部错误、资源耗尽
 * `RuntimeException`系列：错误的强制类型转换、数组越界（`ArrayIndexOutOfBoundsException`）、访问`null`（`NullPointerException`）
 * 非`RuntimeException`系列：读取文件越过尾部、打开不存在的文件、类不存在
-
-## 日志
-
-### 日制框架
-
-* log4j
-
-  * 使用
-
-    `private final Logger logger = LoggerFactory.getLogger(<当前类名>.class)`
-
-  * 配置
-
-    ```yml
-    # set log levels
-    log4j.rootLogger = DEBUG, <使用到日志的类>
-    
-    # 
-    ```
-
-    
 
 # 集合框架
 
@@ -485,7 +559,7 @@ Java多线程的问题，是由Java虚拟机的内存模型（Java Memory Model�
 
 #### 选择`synchronized`的情况
 
-* 运算结果依赖了共享变量某一时刻的值（）；
+* 运算结果依赖了共享变量某一时刻的值；
 * 多个线程同时对共享变量进行修改（总线嗅探机制无法应对多线程同时修改的情况）；
 * 需要满足原子性：多个共享变量需要保证同时同步。
 
@@ -594,3 +668,35 @@ public @interface MyAnnotation {
 
 ### 使用注解与反射生成代码
 
+# Java8 流编程
+
+## 基本介绍
+
+处理集合中的元素时，常迭代遍历元素，采用流编程方式可以更关注于**做什么**而不是怎么做。流编程不存储任何元素，也不会对数据源进行修改，每次操作尽可能是惰性执行（不到需要结果的时候不执行操作）。
+
+## 常用流操作
+
+### 流的操作
+
+* `stream()`/`parallelStream()`：在集合中产生流/并行流；
+* `Stream.of()`：用已有元素作为参数创建流；
+* `Stream.generate()`：创建流；
+* `Stream.iterate()`：迭代生成序列；
+* `filter(Predicate<? super T> predicate)`：产生符合断言中全部元素的流；
+* `map(<lambda表达式/方法引用>)`：对流中的元素进行操作；
+* `skip()`：跳过前n个元素；
+* `limit()`：保留前n个元素，不够就提前结束；
+* `distinct()`：保证元素的唯一性；
+* `concat()`：合并两个流，第一个流应当是有限流。
+
+具体使用可以见[代码]()
+
+### 流的约减
+
+相当于从数据流中得到最终结果，有点类似于SQL查询。
+
+* `count()`：流中元素个数计数；
+* `max(Comparator<? super T> comparator)`/`min(Comparator<? super T> comparator)`：根据比较器返回元素；
+* `findFrist()`/`findAny()`：获取流的第一个/任意一个元素；
+* `anyMatch()`/`allMatch()`/`noneMatch()`：元素匹配作为参数的`Predicate`对象时返回`true`；
+* 
