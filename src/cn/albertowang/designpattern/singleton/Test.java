@@ -1,8 +1,5 @@
 package cn.albertowang.designpattern.singleton;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author AlbertoWang
  * @email AlbertoWang@FoxMail.com
