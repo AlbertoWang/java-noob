@@ -1,4 +1,4 @@
-package cn.albertowang.stream;
+package cn.albertowang.lang.stream;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
