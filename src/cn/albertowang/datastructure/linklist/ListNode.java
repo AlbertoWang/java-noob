@@ -29,6 +29,16 @@ public class ListNode {
         return n1;
     }
 
+    public static ListNode getLinkList(int[] arr) {
+        ListNode preHead = new ListNode(-1);
+        ListNode curr = preHead;
+        for (int i : arr) {
+            curr.next = new ListNode(i);
+            curr = curr.next;
+        }
+        return preHead.next;
+    }
+
     public static void print(ListNode head) {
         ListNode curr = head;
         while (curr != null) {
