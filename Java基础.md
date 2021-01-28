@@ -514,59 +514,116 @@ Java多线程的问题，是由Java虚拟机的内存模型（Java Memory Model�
 
 以上代码仅仅在`thread.start()`调用`run()`方法时会输出一句，虽然`thread.flag`为`true`，但`main`主线程没有检测到`thread.flag`的变化，对于`main`线程来说，`thread.flag`仍然是`false`，这就是多线程情况下的内存不可见性。
 
+## 线程处理
+
+### 安全结束线程
+
+使用`t.interrupt()`方法中断线程，同时在线程重写的`run()`中判断`Thread.currentThread.is Interruptted()`来安全退出线程。
+
 ## 线程同步方法
 
-### `synchronized`关键字
+### Java关键字
+
+#### `synchronized`关键字
 
 使用`synchronized`关键字对线程或变量加锁，在修改一个线程的内存中的信息时会加锁防止其他线程进行操作，修改完毕后解锁，其他线程才可见。
 
 **代码[在此](https://github.com/AlbertoWang/java-noob/blob/master/src/cn/albertowang/concurrent/plain/SynchronizedThread.java)**
 
-#### `synchronized`关键字原理
+##### `synchronized`关键字原理
 
 1. 使用`synchronizer`关键字给线程加锁；
 2. 当线程**获取到锁**后，该线程清空本地内存并从主内存拷贝共享变量的最新值作为副本；
 3. 将修改后的副本再**刷新到主内存**中；
 4. 线程释放锁，在此之前其他线程无法使用被加锁的共享变量。
 
-### `volatile`关键字
+##### 可重入锁
+
+* 定义：当一个线程获取了某个变量的锁后，如果该线程再次对这个变量加锁是允许的，其他线程不允许；
+
+* 实现方式：
+
+  锁关联了持有者标签和计数器，当计数器为0时，任何线程都可以竞争该锁；
+
+  当计数器大于0时，JVM记录下持有锁的线程，如果该线程继续请求锁，计数器++，如果其他线程请求锁，由于计数器非0，需要等待。
+
+#### `volatile`关键字
 
 使用`volatile`关键字修饰共享变量，在修改共享变量时，其他线程也会检测到变量的修改。
 
 **代码[在此](https://github.com/AlbertoWang/java-noob/blob/master/src/cn/albertowang/concurrent/plain/VolatileThread.java)**
 
-#### `volatile`关键字原理
+##### `volatile`关键字原理
 
 1. 被`volatile`关键字修饰的共享变量，当线程操作它时，从主内存拷贝该变量的最新值作为副本；
 2. 线程操作副本并写回主内存后，通过**CPU总线嗅探机制**告知其他线程该共享变量被修改过，需要重新从主内存读取（对外看起来似乎是直接操作了主内存中的变量，故称**内存可见**）。
 
-#### `volatile`关键字注意点
+##### `volatile`关键字注意点
 
-##### CPU总线嗅探机制：
+###### CPU总线嗅探机制：
 
 * 概念：为了实现缓存一致性的机制，由多缓存引起（不是由多核CPU引起，这一点与JMM的同步问题类似）。
 
 * 工作原理：每个处理器（线程）监听总线上传播的数据（主内存）来检查自己缓存（本地内存）的值是否已经过期；如果监听到了修改，会重新将数据存储到缓存（本地内存）中。
 
-##### 指令重排序
+###### 指令重排序
 
 * `volatile`保证了共享变量一致性的同时，禁止了指令重排序优化（使用**内存屏障**实现），保证了被`volatile`修饰的共享变量在编译后执行的顺序与代码顺序相同。
 
 * 防止指令重排序的办法可以应用到单例设计模式中，避免单实例对象还没完成`new`的全部原子操作就被其他线程占用。代码可以参见[单例设计模式](https://github.com/AlbertoWang/java-noob/tree/master/src/cn/albertowang/designpattern/singleton)部分。
 
+#### `synchronized`与`volatile`的选择
 
-### `synchronized`与`volatile`的选择
-
-#### 选择`synchronized`的情况
+##### 选择`synchronized`的情况
 
 * 运算结果依赖了共享变量某一时刻的值；
 * 多个线程同时对共享变量进行修改（总线嗅探机制无法应对多线程同时修改的情况）；
 * 需要满足原子性：多个共享变量需要保证同时同步。
 
-#### 选择`volatile`的情况
+##### 选择`volatile`的情况
 
+* 尽量避免使用`volatile`；
 * 对共享变量的写入不依赖于某个时刻该值的状态（总线嗅探机制无法应对多线程同时修改的情况）；
 * 保证单个线程对共享变量进行修改（同上）。
+
+### 重量级锁、悲观锁
+
+#### `Lock`接口
+
+
+
+### 轻量级锁、自旋锁、乐观锁
+
+#### 写时复制 Copy On Write，COW
+
+需要对数据修改时，将原数据复制一个备份，并在这个备份上进行修改操作（整个修改过程其他线程不知道这个备份）；当修改完成时，修改后的数据备份与原数据进行交换，其他线程才会察觉到修改。
+
+具体体现：`ConcurrentHashMap`、`ConcurrentLinkedQueue`、`CopyOnWriteArrayList`和`CopyOnWriteSet`。
+
+#### 比较并交换 Compare And Swap， CAS
+
+JVM底层实现使用了CPU原语中的锁来保证原子性，没有调用操作系统，因此是轻量级锁。
+
+具体体现：`Atomic`类
+
+ABA问题
+
+* 定义：初始值A，被改为B又改回A，对外不知道A被改过了；
+* 解决：使用一个修改过就会改变的版本号，在对比值的同时还要对比版本号。
+
+### 偏向锁
+
+`new`的实例自带匿名偏向锁；不需要竞争锁，速度较快；在使用变量前修改变量的标志位，说明变量有线程在使用。
+
+#### 偏向锁的升级
+
+如果有线程调用此被使用的变量，偏向锁升级为轻量级锁（不等待，消耗资源）；
+
+如果轻量级锁等待的线程太多（超过核心数一半）或锁被长时间占用（等待的线程超过10次自旋），轻量级锁升级为重量级锁（进入队列等待，不消耗资源）。
+
+### JVM相关
+
+对象的大小包括了*markword*（包括了锁、GC的分代年龄、hashcode等，8字节）、*class pointer*（说明指向哪个class）、*instance data*（字段的大小）、*padding*（将整个对象大小补齐到8的整数倍）
 
 # Java 反射机制
 
@@ -700,3 +757,5 @@ public @interface MyAnnotation {
 * `findFrist()`/`findAny()`：获取流的第一个/任意一个元素；
 * `anyMatch()`/`allMatch()`/`noneMatch()`：元素匹配作为参数的`Predicate`对象时返回`true`；
 * 
+
+# JVM
