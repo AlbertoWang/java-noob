@@ -1,6 +1,5 @@
 package cn.albertowang.algorithm.lru;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
