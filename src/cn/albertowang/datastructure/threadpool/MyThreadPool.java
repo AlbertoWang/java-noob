@@ -77,4 +77,15 @@ public class MyThreadPool {
         }
     }
 
+    public static void main(String[] args) {
+        MyThreadPool threadPool = new MyThreadPool(5, 10);
+        Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Thread name: " + Thread.currentThread().getName());
+            }
+        };
+        for (int i = 0; i < 20; i++)
+            threadPool.execute(task);
+    }
 }
