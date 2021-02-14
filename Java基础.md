@@ -772,3 +772,52 @@ public @interface MyAnnotation {
 * 
 
 # JVM
+
+# Spring
+
+## Spring测试
+
+使用MockMvc框架。
+
+### Spring单元测试
+
+使用Mock环境进行单元测试：
+
+```java
+@RunWith(SpringRunner.class)
+@WebMvcTest(Controller.class) // 待测试controller
+public class ControllerTest {
+    @Autowired
+    private MockMvc mvc;
+    @MockBean
+    private Service service;
+    
+    @Test
+    public void test() throws Exception {
+        Mockito.when(service.method().thenReturn());
+    }
+}
+```
+
+### Spring集成测试
+
+启动了真实的Spring环境进行集成测试：
+
+```java
+@RunWith(SpringRunner.class)
+@SpringBootTest(class = Application.class) // starter类
+@AutoConfigureMockMvc
+public class SpringTest {
+    @Autowired
+    private MockMvc mvc;
+    
+    @Test
+    public void test() throws Exception { // 不符合matcher的预期抛出异常
+        ResultActions resultActions = mvc.perform(MockMvcRequestBuilders.get("测试URL"));
+        resultActions.andExpect(MockMvcResultMatchers.status().isOk()); // HTTP状态码
+        resultActions.andExpect(MockMvcResultMatchers.content().json("应当的返回结果"));
+        resultActions.andDo(MockMvcResultHandlers.print()); // 输出结果
+    }
+}
+```
+
