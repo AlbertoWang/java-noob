@@ -577,7 +577,7 @@ Java多线程的问题，是由Java虚拟机的内存模型（Java Memory Model�
 
 * `volatile`保证了共享变量一致性的同时，禁止了指令重排序优化（使用**内存屏障**实现），保证了被`volatile`修饰的共享变量在编译后执行的顺序与代码顺序相同。
 
-* 防止指令重排序的办法可以应用到单例设计模式中，避免单实例对象还没完成`new`的全部原子操作就被其他线程占用。代码可以参见[单例设计模式](https://github.com/AlbertoWang/java-noob/tree/master/src/cn/albertowang/designpattern/singleton)部分。
+* 防止指令重排序的办法可以应用到单例设计模式中，避免单实例对象还没完成`new`的全部原子操作就被其他线程占用。代码可以参见[单例设计模式](https://github.com/AlbertoWang/java-noob/blob/master/src/main/java/cn/albertowang/designpattern/singleton/DoubleCheckLockSingleton.java)部分。
 
 #### `synchronized`与`volatile`的选择
 
@@ -675,9 +675,9 @@ public @interface MyAnnotation {
 |     Override      |                 METHOD                 | 检查该方法是否覆盖了父类方法，在实现接口的时候IDE会自动添加  | <img src="Java基础.assets/override.png" alt="override" style="zoom:23%;" /> |
 |    Documented     |            ANNOTATION_TYPE             |                  说明该注解被包含在javdoc中                  |                                                              |
 |     Resource      |              TYPE，FIELD               | 在TYPE情况下标记为其他地方会使用到的资源，在FIELD情况下用来注入资源 | <img src="Java基础.assets/resource.png" alt="resource" style="zoom:33%;" />注入资源 |
-|      Target       |            ANNOTATION_TYPE             |                  说明该注解可以用到什么位置                  | 见[代码](https://github.com/AlbertoWang/java-noob/tree/master/src/cn/albertowang/reflection/annotation) |
-|     Retention     |            ANNOTATION_TYPE             |                         注解生命周期                         | 见[代码](https://github.com/AlbertoWang/java-noob/tree/master/src/cn/albertowang/reflection/annotation) |
-|     Inherited     |            ANNOTATION_TYPE             |  声明被标注的类的子类仍保留此注解，仅限类继承，接口等都不行  | 见[代码](https://github.com/AlbertoWang/java-noob/tree/master/src/cn/albertowang/reflection/annotation) |
+|      Target       |            ANNOTATION_TYPE             |                  说明该注解可以用到什么位置                  | 见[代码](https://github.com/AlbertoWang/java-noob/tree/master/src/main/java/cn/albertowang/reflection/annotation) |
+|     Retention     |            ANNOTATION_TYPE             |                         注解生命周期                         | 见[代码](https://github.com/AlbertoWang/java-noob/tree/master/src/main/java/cn/albertowang/reflection/annotation) |
+|     Inherited     |            ANNOTATION_TYPE             |  声明被标注的类的子类仍保留此注解，仅限类继承，接口等都不行  | 见[代码](https://github.com/AlbertoWang/java-noob/tree/master/src/main/java/cn/albertowang/reflection/annotation) |
 
 * `Target`（注解作用位置）的参数保存在*java.lang.annotation.ElementType.java*中，包含了以下几种：
 
@@ -759,7 +759,7 @@ public @interface MyAnnotation {
 * `distinct()`：保证元素的唯一性；
 * `concat()`：合并两个流，第一个流应当是有限流。
 
-具体使用可以见[代码]()
+具体使用可以见[代码](https://github.com/AlbertoWang/java-noob/blob/master/src/main/java/cn/albertowang/lang/stream/StreamExample.java)
 
 ### 流的约减
 
