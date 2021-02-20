@@ -28,7 +28,7 @@ public class MyThreadPool {
                     task.run();
                     task = null;
                 } else { // 无任务，从任务队列取出任务
-                    Runnable queueTask = taskQueue.poll();
+                    Runnable queueTask = blockingQueue.poll();
                     if (queueTask != null)
                         queueTask.run();
                     else { // 无队列任务，休眠
@@ -43,32 +43,32 @@ public class MyThreadPool {
         }
     }
 
-    private final int threadNum;
-    private int workingThreadNum;
-    private ArrayList<MyThread> threads;
-    private ArrayBlockingQueue<Runnable> taskQueue;
+    private final int maximumPoolSize;
+    private int corePoolSize;
+    private ArrayList<MyThread> corePool;
+    private ArrayBlockingQueue<Runnable> blockingQueue;
     private final ReentrantLock lock = new ReentrantLock();
 
-    public MyThreadPool(int poolSize, int taskQueueSize) {
-        threadNum = poolSize;
-        threads = new ArrayList<>(poolSize);
-        taskQueue = new ArrayBlockingQueue<>(taskQueueSize);
-        workingThreadNum = 0;
+    public MyThreadPool(int maxPoolSize, int queueSize) {
+        maximumPoolSize = maxPoolSize;
+        corePool = new ArrayList<>(maxPoolSize);
+        blockingQueue = new ArrayBlockingQueue<>(queueSize);
+        corePoolSize = 0;
     }
 
     public void execute(Runnable task) {
         try {
             lock.lock();
-            // 线程数量小于线程池大小
-            if (workingThreadNum < threadNum) {
+            // 核心线程数量小于最大线程池大小
+            if (corePoolSize < maximumPoolSize) {
                 MyThread thread = new MyThread(task);
                 thread.start();
-                threads.add(thread);
-                workingThreadNum++;
+                corePool.add(thread);
+                corePoolSize++;
             }
             // 线程池满，任务进入等待队列
             else {
-                if (!taskQueue.offer(task))
+                if (!blockingQueue.offer(task))
                     // 等待队列已满，拒绝任务
                     System.err.println("Task queue is full, task is rejected.");
             }
