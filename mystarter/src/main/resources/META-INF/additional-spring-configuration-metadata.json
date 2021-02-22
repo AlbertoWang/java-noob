@@ -1,0 +1,33 @@
+{
+  "properties": [
+    {
+      "name": "myconfig.alibaba.username",
+      "type": "java.lang.String",
+      "description": "Description for myconfig.alibaba.username."
+    },
+    {
+      "name": "myconfig.alibaba.password",
+      "type": "java.lang.String",
+      "description": "Description for myconfig.alibaba.password."
+    },
+    {
+      "name": "myconfig.alibaba.description",
+      "type": "java.lang.String",
+      "description": "Description for myconfig.alibaba.description."
+    },
+    {
+      "name": "myconfig.tencent.username",
+      "type": "java.lang.String",
+      "description": "Description for myconfig.tencent.username."
+    },
+    {
+      "name": "myconfig.tencent.password",
+      "type": "java.lang.String",
+      "description": "Description for myconfig.tencent.password."
+    },
+    {
+      "name": "myconfig.tencent.description",
+      "type": "java.lang.String",
+      "description": "Description for myconfig.tencent.description."
+    }
+  ] }

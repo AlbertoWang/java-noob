@@ -1,0 +1,9 @@
+myconfig:
+  alibaba-launcher:
+    username: aliuser
+    password: 123
+    description: 'This is alibaba'
+  tencent-launcher:
+    username: tencentuser
+    password: 456
+    description: 'This is tencent'
