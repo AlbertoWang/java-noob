@@ -1,4 +1,4 @@
-package cn.albertowang.datastructure.threadpool;
+package cn.albertowang.concurrent.threadpool;
 
 import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
