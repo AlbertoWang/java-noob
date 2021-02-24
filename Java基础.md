@@ -773,6 +773,48 @@ public @interface MyAnnotation {
 
 # JVM
 
+## JVM概述
+
+Java代码执行过程：.java编译为.class，通过ClassLoader加载到JVM。类保存在方法区*Method Area*，类的实例保存在虚拟机堆*JVM Heap*，调用方法的过程会使用到虚拟机栈*JVM Stacks*、程序计数器*Program Counter Register*和本地方法区*Native Method Area*。
+
+<img src="Java基础.assets/JVM.png" alt="override" style="zoom:50%;" />
+
+## JMM
+
+### 分区
+
+1. 线程私有：程序计数器，虚拟机栈（描述Java方法执行过程，包括局部变量、操作栈、返回地址等），本地方法区（描述Native方法过程）；
+2. 线程共享：方法区（存储类的信息、常量、静态变量、常量池等），虚拟机堆（创建的对象都在这里，GC主要区域）。
+
+### 引用类型
+
+1. 强引用：最常用的方式，不会被GC；
+2. 软引用：内存不足时被回收；
+3. 弱引用：GC过程一定被回收；
+4. 虚引用：跟踪对象GC状态。
+
+## JVM类加载
+
+### 类加载流程
+
+1. 加载：JVM读取.class文件到方法区，在堆中创建`Class`对象；
+2. 验证：验证.class文件符合JVM要求，满足安全；
+3. 准备：在方法区为类变量分配内存空间，设置初始值；
+4. 解析：将常量池堆符号引用替换为直接引用；
+5. 初始化：执行构造函数的\<client>方法，先执行父类的才能执行子类的。
+
+### 双亲委派机制
+
+用来保障类的安全和唯一性。类加载时，先不加载此类，而是把类加载请求向上委派给父类完成；若父类无法加载该类，才会向下委派子类加载器来加载：
+
+1. UserClassLoader挂载到ApplicationClassLoader；
+2. 委托给ExtensionClassLoader；
+3. 委托给BootstrapClassLoader；
+4. BootstrapClassLoader查找并加载.class文件，若不存在则交给ExtensionClassLoader；
+5. ExtensionClassLoader查找并加载.class文件，若不存在则交给ApplicationClassLoader；
+6. ApplicationClassLoader查找并加载.class文件，若不存在则交给UserClassLoader；
+7. UserClassLoader查找并加载.class文件，若不存在则抛出`ClassNotFound`。
+
 # Spring
 
 ## Spring测试
