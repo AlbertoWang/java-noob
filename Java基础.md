@@ -815,6 +815,23 @@ Java代码执行过程：.java编译为.class，通过ClassLoader加载到JVM。
 6. ApplicationClassLoader查找并加载.class文件，若不存在则交给UserClassLoader；
 7. UserClassLoader查找并加载.class文件，若不存在则抛出`ClassNotFound`。
 
+## JVM内存管理
+
+### JVM内存模型
+
+#### JVM调优
+
+|       参数        |             含义              |
+| :---------------: | :---------------------------: |
+|       -Xss        |         自定义栈容量          |
+|       -Xmx        |          最大堆容量           |
+|       -Xms        |          初始堆容量           |
+|       -Xmn        |        堆中年轻代大小         |
+| -XX:SurvivorRatio | Eden区:两个survivor区容量比值 |
+|   -XX:NewRatio    |     老年代:新生代容量比值     |
+|    -XX:OldSize    |          老年代容量           |
+|    -XX:NewSize    |          新生代容量           |
+
 # Spring
 
 ## Spring测试
