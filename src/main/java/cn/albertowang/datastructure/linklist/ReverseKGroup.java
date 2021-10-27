@@ -8,12 +8,13 @@ package cn.albertowang.datastructure.linklist;
  **/
 
 public class ReverseKGroup {
-
     public static ListNode reverseKGroup(ListNode head, int k) {
-        if (head == null)
+        if (head == null) {
             return null;
-        if (k < 2)
+        }
+        if (k < 2) {
             return head;
+        }
         // virtual head
         ListNode preHead = new ListNode(-1);
         preHead.next = head;
@@ -21,10 +22,12 @@ public class ReverseKGroup {
         ListNode lastOfPre = preHead;
         ListNode lastOfThis = lastOfPre;
         while (lastOfThis != null) {
-            for (int i = 0; i < k && lastOfThis != null; i++)
+            for (int i = 0; i < k && lastOfThis != null; i++) {
                 lastOfThis = lastOfThis.next;
-            if (lastOfThis == null)
+            }
+            if (lastOfThis == null) {
                 break;
+            }
             // head last
             ListNode headOfThis = lastOfPre.next;
             ListNode headOfLast = lastOfThis.next;

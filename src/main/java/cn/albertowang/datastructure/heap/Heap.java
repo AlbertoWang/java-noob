@@ -15,24 +15,28 @@ public class Heap {
     static int topToBottom = 0;
 
     public static void generateHeapFromLeaf(int[] arr) {
-        if (arr == null)
+        if (arr == null) {
             return;
+        }
         for (int i = 0; i < arr.length; i++) {
             heapAdjustFromLeaf(arr, i);
         }
     }
 
     public static void generateHeapFromRoot(int[] arr) {
-        if (arr == null)
+        if (arr == null) {
             return;
-        for (int i = 0; i < arr.length / 2; i++)
+        }
+        for (int i = 0; i < arr.length / 2; i++) {
             heapAdjustFromRoot(arr, 0, arr.length);
+        }
     }
 
     // top k minimum
     public static void topK(int[] arr, int k) {
-        if (arr == null)
+        if (arr == null) {
             return;
+        }
         // init first heap
         heapAdjustFromRoot(arr, 0, k);
         for (int i = k; i < arr.length; i++) {
@@ -63,9 +67,10 @@ public class Heap {
 
                 // update curr
                 curr = idx;
-            } else
+            } else {
                 // update curr
                 curr = curr * 2 + 1;
+            }
             // update left and right
             left = curr * 2 + 1;
             right = curr * 2 + 2;

@@ -10,8 +10,9 @@ package cn.albertowang.datastructure.linklist;
 public class ReverseLinkList {
 
     public static ListNode reverse(ListNode head) {
-        if (head == null)
+        if (head == null) {
             return null;
+        }
         ListNode curr = head;
         ListNode pre = null;
         ListNode next;

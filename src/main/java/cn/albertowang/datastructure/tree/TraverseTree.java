@@ -25,11 +25,17 @@ public class TraverseTree {
         }
     }
 
-    // 非递归前序遍历
+    /**
+     * 非递归前序遍历
+     *
+     * @param root
+     * @return
+     */
     public static ArrayList<Integer> preTraverse(TreeNode root) {
         ArrayList<Integer> res = new ArrayList<>();
-        if (root == null)
+        if (root == null) {
             return res;
+        }
         Stack<TreeNode> stack = new Stack<>();
         TreeNode curr = root;
         while (!stack.isEmpty() || curr != null) {
@@ -44,11 +50,17 @@ public class TraverseTree {
         return res;
     }
 
-    // 非递归中序遍历
+    /**
+     * 非递归中序遍历
+     *
+     * @param root
+     * @return
+     */
     public static ArrayList<Integer> midTraverse(TreeNode root) {
         ArrayList<Integer> res = new ArrayList<>();
-        if (root == null)
+        if (root == null) {
             return res;
+        }
         Stack<TreeNode> stack = new Stack<>();
         TreeNode curr = root;
         while (!stack.isEmpty() || curr != null) {
@@ -64,11 +76,17 @@ public class TraverseTree {
         return res;
     }
 
-    // 非递归后序遍历
+    /**
+     * 非递归后序遍历
+     *
+     * @param root
+     * @return
+     */
     public static ArrayList<Integer> postTraverse(TreeNode root) {
         ArrayList<Integer> res = new ArrayList<>();
-        if (root == null)
+        if (root == null) {
             return res;
+        }
         Stack<TreeNode> stack = new Stack<>();
         TreeNode curr = root;
         while (!stack.isEmpty() || curr != null) {

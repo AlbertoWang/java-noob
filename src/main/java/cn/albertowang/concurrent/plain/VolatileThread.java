@@ -17,7 +17,8 @@ flag = true
  */
 
 public class VolatileThread extends Thread {
-    private volatile boolean flag = false;  // 使用volatile修饰共享变量
+    // 使用volatile修饰共享变量
+    private volatile boolean flag = false;
 
     @Override
     public void run() {
@@ -26,7 +27,8 @@ public class VolatileThread extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        flag = true;  // 子线程对共享变量的修改
+        // 子线程对共享变量的修改
+        flag = true;
         System.out.println("flag = " + flag);
     }
 
@@ -37,8 +39,10 @@ public class VolatileThread extends Thread {
 
     public static void main(String[] args) {  // main函数为主线程
         VolatileThread thread = new VolatileThread();
-        thread.start(); // 子线程开始执行：thread.flag在1秒后变为true
-        while (true) {  // 主线程执行
+        // 子线程开始执行：thread.flag在1秒后变为true
+        thread.start();
+        // 主线程执行
+        while (true) {
             // 这里的判断仍是主线程判断，flag是共享变量，由于共享变量内存可见所以主线程可以嗅探到flag的变化
             if (thread.isFlag()) {
                 System.out.println("主线程访问到 flag 变量：" + thread.flag);

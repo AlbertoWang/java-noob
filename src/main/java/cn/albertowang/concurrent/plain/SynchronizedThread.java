@@ -17,7 +17,8 @@ flag = true
  */
 
 public class SynchronizedThread extends Thread {
-    private boolean flag = false;  // 共享变量
+    // 共享变量
+    private boolean flag = false;
 
     @Override
     public void run() {
@@ -26,7 +27,8 @@ public class SynchronizedThread extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        flag = true;  // 子线程对共享变量的修改
+        // 子线程对共享变量的修改
+        flag = true;
         System.out.println("flag = " + flag);
     }
 
@@ -37,8 +39,10 @@ public class SynchronizedThread extends Thread {
 
     public static void main(String[] args) {  // main函数为主线程
         SynchronizedThread thread = new SynchronizedThread();
-        thread.start(); // 子线程开始执行：thread.flag在1秒后变为true
-        while (true) {  // 主线程执行
+        // 子线程开始执行：thread.flag在1秒后变为true
+        thread.start();
+        // 主线程执行
+        while (true) {
             // 这里的判断仍是主线程判断，flag是共享变量，由于加了锁，主线程可以检测到子线程对共享变量的修改
             synchronized (thread) {
                 if (thread.isFlag()) {

@@ -12,27 +12,29 @@ import java.util.Arrays;
 public class QuickSort {
 
     public static void partition(int[] arr, int begin, int end) {
-        if (begin >= end)
+        if (begin >= end) {
             return;
+        }
         // set last item as pivot
-        int left = begin, right = end, pivot = end;
+        int left = begin, right = end;
 
         while (left < right) {
-            while (arr[left] <= arr[pivot] && left < right)
+            while (arr[left] <= arr[end] && left < right) {
                 left++;
-            while (arr[right] >= arr[pivot] && left < right)
+            }
+            while (arr[right] >= arr[end] && left < right) {
                 right--;
+            }
             // swap
             int temp = arr[left];
             arr[left] = arr[right];
             arr[right] = temp;
-
         }
 
         // swap pivot and meeting point
         int temp = arr[left];
-        arr[left] = arr[pivot];
-        arr[pivot] = temp;
+        arr[left] = arr[end];
+        arr[end] = temp;
 
         // iteration
         partition(arr, begin, left - 1);
@@ -44,19 +46,5 @@ public class QuickSort {
         QuickSort.partition(arr, 0, arr.length - 1);
         Arrays.stream(arr).forEach(n -> System.out.print(n + " "));
         System.out.println();
-
-        arr = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
-        QuickSort.partition(arr, 0, arr.length - 1);
-        Arrays.stream(arr).forEach(n -> System.out.print(n + " "));
-        System.out.println();
-
-        arr = new int[]{9, 8, 7, 6, 5, 4, 3, 2, 1};
-        QuickSort.partition(arr, 0, arr.length - 1);
-        Arrays.stream(arr).forEach(n -> System.out.print(n + " "));
-        System.out.println();
-        
-        arr = new int[]{4, 1, 1, 6, 1, 7, 8, 9, 4,};
-        QuickSort.partition(arr, 0, arr.length - 1);
-        Arrays.stream(arr).forEach(n -> System.out.print(n + " "));
     }
 }

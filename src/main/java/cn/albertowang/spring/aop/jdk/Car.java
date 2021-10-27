@@ -8,7 +8,13 @@ package cn.albertowang.spring.aop.jdk;
  **/
 
 public interface Car {
-    public void rent();
+    /**
+     * 车辆出租抽象方法
+     */
+    void rent();
 
-    public void drive();
+    /**
+     * 车辆行驶抽象方法
+     */
+    void drive();
 }

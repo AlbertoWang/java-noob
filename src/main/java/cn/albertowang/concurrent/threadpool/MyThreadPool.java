@@ -12,7 +12,6 @@ import java.util.concurrent.locks.ReentrantLock;
  **/
 
 public class MyThreadPool {
-
     // 工作线程
     class MyThread extends Thread {
         private Runnable task;
@@ -29,9 +28,9 @@ public class MyThreadPool {
                     task = null;
                 } else { // 无任务，从任务队列取出任务
                     Runnable queueTask = blockingQueue.poll();
-                    if (queueTask != null)
+                    if (queueTask != null) {
                         queueTask.run();
-                    else { // 无队列任务，休眠
+                    } else { // 无队列任务，休眠
                         try {
                             Thread.sleep(10);
                         } catch (InterruptedException e) {
@@ -68,9 +67,10 @@ public class MyThreadPool {
             }
             // 线程池满，任务进入等待队列
             else {
-                if (!blockingQueue.offer(task))
+                if (!blockingQueue.offer(task)) {
                     // 等待队列已满，拒绝任务
                     System.err.println("Task queue is full, task is rejected.");
+                }
             }
         } finally {
             lock.unlock();
@@ -80,7 +80,8 @@ public class MyThreadPool {
     public static void main(String[] args) {
         MyThreadPool threadPool = new MyThreadPool(5, 10);
         Runnable task = () -> System.out.println("Thread name: " + Thread.currentThread().getName());
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 50; i++) {
             threadPool.execute(task);
+        }
     }
 }

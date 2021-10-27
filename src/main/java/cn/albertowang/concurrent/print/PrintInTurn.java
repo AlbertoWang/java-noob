@@ -8,59 +8,76 @@ package cn.albertowang.concurrent.print;
  **/
 
 public class PrintInTurn {
-    // 多线程内存可见的打印标记
+    /**
+     * 多线程内存可见的打印标记
+     */
     private static volatile boolean printFlag = true;
 
-    // synchronized用来加锁的对象
-    private static final Object lock = new Object();
+    /**
+     * synchronized用来加锁的对象
+     */
+    private static final Object LOCK = new Object();
 
-    // synchronize作用在对象上，wait和notifyAll作用于加锁对象
+    /**
+     * synchronize作用在对象上，wait和notifyAll作用于加锁对象
+     */
     static class Task1 implements Runnable {
         @Override
         public void run() {
             for (int i = 0; i < 3; i++) {
-                synchronized (lock) { // 加锁
-                    while (printFlag) { // printFlag=false才打印，否则等待
+                // 加锁
+                synchronized (LOCK) {
+                    // printFlag=false才打印，否则等待
+                    while (printFlag) {
                         try {
-                            lock.wait();
+                            LOCK.wait();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
                     char c = (char) ('A' + i);
                     System.out.print(c + " ");
-                    printFlag = true; // 打印过更新printFlag，等待其他线程打印
-                    lock.notifyAll();
+                    // 打印过更新printFlag，等待其他线程打印
+                    printFlag = true;
+                    LOCK.notifyAll();
                 }
             }
         }
     }
 
-    // synchronize作用在对象上，wait和notifyAll作用于加锁对象
+    /**
+     * synchronize作用在对象上，wait和notifyAll作用于加锁对象
+     */
     static class Task2 implements Runnable {
         @Override
         public void run() {
             for (int i = 0; i < 3; i++) {
-                synchronized (lock) { // 加锁
-                    while (!printFlag) { // printFlag=true才打印，否则等待
+                // 加锁
+                synchronized (LOCK) {
+                    // printFlag=true才打印，否则等待
+                    while (!printFlag) {
                         try {
-                            lock.wait();
+                            LOCK.wait();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
                     System.out.print(i + 1);
-                    printFlag = false; // 打印过更新printFlag，等待其他线程打印
-                    lock.notifyAll();
+                    // 打印过更新printFlag，等待其他线程打印
+                    printFlag = false;
+                    LOCK.notifyAll();
                 }
             }
         }
     }
 
-    // synchronized作用在方法上，wait和notifyAll作用于方法自身
+    /**
+     * synchronized作用在方法上，wait和notifyAll作用于方法自身
+     */
     public synchronized void printA() {
         for (int i = 0; i < 3; i++) {
-            while (printFlag) { // printFlag=false才打印，否则等待
+            // printFlag=false才打印，否则等待
+            while (printFlag) {
                 try {
                     this.wait();
                 } catch (InterruptedException e) {
@@ -69,15 +86,19 @@ public class PrintInTurn {
             }
             char c = (char) ('A' + i);
             System.out.print(c + " ");
-            printFlag = true; // 打印过更新printFlag，等待其他线程打印
+            // 打印过更新printFlag，等待其他线程打印
+            printFlag = true;
             this.notifyAll();
         }
     }
 
-    // synchronized作用在方法上，wait和notifyAll作用于方法自身
+    /**
+     * synchronized作用在方法上，wait和notifyAll作用于方法自身
+     */
     public synchronized void printB() {
         for (int i = 0; i < 3; i++) {
-            while (!printFlag) { // printFlag=false才打印，否则等待
+            // printFlag=false才打印，否则等待
+            while (!printFlag) {
                 try {
                     this.wait();
                 } catch (InterruptedException e) {
@@ -86,7 +107,8 @@ public class PrintInTurn {
             }
             int c = 1 + i;
             System.out.print(c);
-            printFlag = false; // 打印过更新printFlag，等待其他线程打印
+            // 打印过更新printFlag，等待其他线程打印
+            printFlag = false;
             this.notifyAll();
         }
     }

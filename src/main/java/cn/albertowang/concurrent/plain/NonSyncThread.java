@@ -14,7 +14,8 @@ flag = true
  */
 
 public class NonSyncThread extends Thread {
-    private boolean flag = false;  // 共享变量
+    // 共享变量
+    private boolean flag = false;
 
     @Override
     public void run() {
@@ -23,7 +24,8 @@ public class NonSyncThread extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        flag = true;  // 子线程对共享变量的修改
+        // 子线程对共享变量的修改
+        flag = true;
         System.out.println("flag = " + flag);
     }
 
@@ -32,10 +34,12 @@ public class NonSyncThread extends Thread {
     }
 
 
-    public static void main(String[] args){  // main函数为主线程
+    public static void main(String[] args) {  // main函数为主线程
         NonSyncThread thread = new NonSyncThread();
-        thread.start(); // 子线程开始执行：thread.flag在1秒后变为true
-        while (true) {  // 主线程执行
+        // 子线程开始执行：thread.flag在1秒后变为true
+        thread.start();
+        // 主线程执行
+        while (true) {
             // 这里的判断仍是主线程判断，flag是共享变量，此时还没更新到主内存
             if (thread.isFlag()) {
                 System.out.println("主线程访问到 flag 变量：" + thread.flag);
