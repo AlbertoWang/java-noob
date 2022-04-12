@@ -1,4 +1,4 @@
-myconfig:
+launcher-config:
   alibaba-launcher:
     username: aliuser
     password: 123
@@ -7,3 +7,7 @@ myconfig:
     username: tencentuser
     password: 456
     description: 'This is tencent'
+  bytedance-launcher:
+    username: bytedance
+    password: 789
+    description: 'This is bytedance'

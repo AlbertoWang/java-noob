@@ -10,12 +10,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @description 自定义配置类
  **/
 
-@ConfigurationProperties(prefix = "myconfig")
+@ConfigurationProperties(prefix = "launcher-config")
 @Data
 public class MyProperties {
     // 已通过外部配置文件配置好的配置
     private UserInfo alibabaLauncher = new UserInfo();
     private UserInfo tencentLauncher = new UserInfo();
+    private UserInfo bytedanceLauncher = new UserInfo();
 
     // 配置包含元素
     @Data

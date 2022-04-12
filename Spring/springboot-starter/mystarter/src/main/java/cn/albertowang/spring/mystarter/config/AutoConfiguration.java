@@ -1,6 +1,7 @@
 package cn.albertowang.spring.mystarter.config;
 
 import cn.albertowang.spring.mystarter.bean.AlibabaLauncher;
+import cn.albertowang.spring.mystarter.bean.BytedanceLauncher;
 import cn.albertowang.spring.mystarter.bean.TencentLauncher;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -28,5 +29,10 @@ public class AutoConfiguration {
     @Bean
     public TencentLauncher tencentLauncher(MyProperties properties) {
         return new TencentLauncher(properties.getTencentLauncher());
+    }
+
+    @Bean(value = "bytedance")
+    public BytedanceLauncher bytedanceLauncher(MyProperties properties) {
+        return new BytedanceLauncher(properties.getBytedanceLauncher());
     }
 }

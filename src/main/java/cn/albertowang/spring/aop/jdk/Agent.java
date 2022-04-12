@@ -8,7 +8,7 @@ import java.lang.reflect.Proxy;
  * @author AlbertoWang
  * @email AlbertoWang@FoxMail.com
  * @date 2021/2/14 21:46
- * @description 中介（代理类
+ * @description 中介（代理类Proxy）
  **/
 
 public class Agent implements InvocationHandler {
@@ -17,6 +17,10 @@ public class Agent implements InvocationHandler {
      * 委托类的接口，JDK自带的动态代理必须给出一个interface
      */
     private Car car;
+
+    public Agent(Car car) {
+        this.car = car;
+    }
 
     /**
      * 通过反射调用委托类实现的方法，每次调用代理给出的委托类的方法，都会走一遍这个流程
@@ -33,10 +37,10 @@ public class Agent implements InvocationHandler {
         // 前置准备
         System.out.println("Find suitable customer");
         // 使用反射调用委托类的具体方法
-        method.invoke(this.car, args);
+        Object result = method.invoke(this.car, args);
         // 后续处理
         System.out.println("Rend the car to customer");
-        return null;
+        return result;
     }
 
     /**
@@ -45,13 +49,12 @@ public class Agent implements InvocationHandler {
      * @param car 接口
      * @return 调用方需要的实例
      */
-    public Object getInstance(Car car) {
+    public static Object getInstance(Car car) {
         // 将委托类替换为具体实现
-        this.car = car;
         // 将委托类的类型确定为与参数相同的实现
         Class<?> clazz = car.getClass();
         // 返回委托类实例
-        return Proxy.newProxyInstance(clazz.getClassLoader(), clazz.getInterfaces(), this);
+        return Proxy.newProxyInstance(clazz.getClassLoader(), clazz.getInterfaces(), new Agent(car));
     }
 
     /**
@@ -68,7 +71,7 @@ public class Agent implements InvocationHandler {
      */
     public static void main(String[] args) throws Exception {
         // 此时的car已经是Jeep类（委托类）
-        Car car = (Car) new Agent().getInstance(new Jeep());
+        Car car = (Car) Agent.getInstance(new Jeep());
         car.rent();
         car.drive();
 

@@ -1,10 +1,10 @@
-package cn.albertowang.spring.mystarter;
+package cn.albertowang.teststarter;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MystarterApplicationTests {
+class TestStarterApplicationTests {
 
     @Test
     void contextLoads() {
